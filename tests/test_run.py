@@ -11,7 +11,7 @@ from edolab.run import (
     get_experiment_parameters,
 )
 
-from .experiment import fitness, NegativeUniform
+from .experiment import NegativeUniform, fitness
 
 
 def test_get_default_optimiser_parameters():

@@ -2,7 +2,6 @@
 
 import importlib
 import os
-import tarfile
 
 import edo
 import numpy as np

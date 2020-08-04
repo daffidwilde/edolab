@@ -8,12 +8,12 @@ from edo.distributions import Uniform
 
 from edolab.summarise import (
     get_distributions,
-    get_trial_summary,
     get_representative_idxs,
+    get_trial_summary,
     write_representatives,
 )
-from .experiment import NegativeUniform
 
+from .experiment import NegativeUniform
 
 here = pathlib.Path(f"{__file__}").parent
 
@@ -80,8 +80,9 @@ def test_write_representatives(tmpdir):
     write_representatives(summary, idxs, data, out)
 
     for i in idxs:
-        assert (
-            sorted(path.name for path in (out / str(i)).iterdir()) == [
-                "README", "main.csv", "main.meta", "main.state"
-            ]
-        )
+        assert sorted(path.name for path in (out / str(i)).iterdir()) == [
+            "README",
+            "main.csv",
+            "main.meta",
+            "main.state",
+        ]
