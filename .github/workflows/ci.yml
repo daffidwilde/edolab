@@ -33,5 +33,5 @@ jobs:
         run: python -m pytest --cov=edolab --cov-fail-under=100 tests
       - name: Check pip install
         run: |
-          python -m pip uninstall edolab
+          python -m pip uninstall -y edolab
           python -m pip install edolab
