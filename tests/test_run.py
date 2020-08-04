@@ -1,6 +1,10 @@
 """ Tests for the `run` command helper functions. """
 
+import inspect
+import pathlib
+
 import edo
+from edo.distributions import Uniform
 
 from edolab.run import (
     get_default_optimiser_arguments,
@@ -32,15 +36,15 @@ def test_get_experiment_parameters():
     """ Test that the correct parameters can be brought over from an experiment
     script. """
 
-    params = get_experiment_parameters("tests.experiment")
+    here = pathlib.Path(f"{__file__}").parent
+    params = get_experiment_parameters(here / "experiment.py")
     expected = {
-        "fitness": fitness,
-        "size": 10,
+        "size": 5,
         "row_limits": [1, 5],
         "col_limits": [1, 2],
         "weights": None,
-        "max_iter": 5,
-        "best_prop": 0.1,
+        "max_iter": 3,
+        "best_prop": 0.5,
         "lucky_prop": 0,
         "crossover_prob": 0.5,
         "mutation_prob": 0.5,
@@ -49,15 +53,21 @@ def test_get_experiment_parameters():
     }
 
     for key, val in params.items():
-        if key != "families":
+        if key == "fitness":
+            assert val.__doc__ == fitness.__doc__
+            assert inspect.signature(val) == inspect.signature(fitness)
+
+        elif key == "families":
+            families = val
+            for fam, dist in zip(families, [Uniform, NegativeUniform]):
+                distribution = fam.distribution
+                assert isinstance(fam, edo.Family)
+                assert distribution.__doc__ == dist.__doc__
+                assert distribution.name == dist.name
+                assert distribution.param_limits == dist.param_limits
+                assert distribution.hard_limits == dist.hard_limits
+                assert distribution.sample is dist.sample
+
+        else:
             exp = expected[key]
             assert exp == val
-        else:
-            families = val
-            for fam in families:
-                assert isinstance(fam, edo.Family)
-
-            assert [fam.distribution for fam in families] == [
-                edo.distributions.Uniform,
-                NegativeUniform,
-            ]

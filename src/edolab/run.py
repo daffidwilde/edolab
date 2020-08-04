@@ -18,12 +18,14 @@ def get_default_optimiser_arguments():
     }
 
 
-def get_experiment_parameters(name):
+def get_experiment_parameters(experiment):
     """ Get the parameters for the experiment. """
 
-    module = {
-        k.lower(): v for k, v in vars(importlib.import_module(name)).items()
-    }
+    spec = importlib.util.spec_from_file_location("__main__", experiment)
+    experiment = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(experiment)
+
+    module = {k.lower(): v for k, v in vars(experiment).items()}
 
     module_params = {
         k: v
@@ -37,4 +39,5 @@ def get_experiment_parameters(name):
 
     params = get_default_optimiser_arguments()
     params.update(module_params)
+
     return params
