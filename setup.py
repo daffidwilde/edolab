@@ -29,6 +29,6 @@ setup(
     package_dir={"": "src"},
     python_requires=">=3.6",
     install_requires=requirements,
-    tests_require=["pytest", "pytest-cov", "hypothesis", "numpy"],
+    tests_require=["pytest", "pytest-cov", "numpy"],
     entry_points={"console_scripts": "edolab=edolab.__main__:main"},
 )
