@@ -20,6 +20,7 @@ setup(
     version=version["__version__"],
     description="A command line tool for running experiments with `edo`.",
     long_description=README,
+    long_description_content_type="text/markdown",
     url="https://github.com/daffidwilde/edolab",
     author="Henry Wilde",
     author_email="henrydavidwilde@gmail.com",

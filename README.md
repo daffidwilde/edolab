@@ -1,5 +1,8 @@
 # edolab
 
+![CI](https://github.com/daffidwilde/edolab/workflows/CI/badge.svg)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 A command line tool for running experiments with `edo`.
 
 
