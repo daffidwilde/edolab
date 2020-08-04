@@ -120,10 +120,7 @@ def test_summarise_can_make_tarball(tmpdir):
     out = pathlib.Path(tmpdir)
     os.system(f"cp -r {here / 'experiment'} {out}/")
 
-    runner = CliRunner()
-    _ = runner.invoke(
-        main, ["summarise", "--tarball", f"{here / 'experiment.py'}", "f{out}"]
-    )
+    os.system(f"edolab summarise --tarball {here / 'experiment.py'} {tmpdir}")
 
     out = out / "experiment"
     assert {p.name for p in out.iterdir()} == {"data.tar.gz", "summary"}
