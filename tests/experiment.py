@@ -8,8 +8,9 @@ def fitness(individual, size=3, seed=0):
     """ Randomly sample `size` values from an individual and return the
     minimum. """
 
+    np.random.seed(seed)
     values = individual.dataframe.values.flat
-    sample = np.random.choice(values, size=size, random_state=seed)
+    sample = np.random.choice(values, size=size)
     return min(sample)
 
 
@@ -21,12 +22,12 @@ class NegativeUniform(Uniform):
     hard_limits = {"bounds": [-100, 0]}
 
 
-Uniform.param_limits = [0, 1]
+Uniform.param_limits["bounds"] = [0, 1]
 
-size = 10
+size = 5
 row_limits = [1, 5]
 col_limits = [1, 2]
-max_iter = 5
-best_prop = 0.1
+max_iter = 3
+best_prop = 0.5
 mutation_prob = 0.5
 distributions = [Uniform, NegativeUniform]
