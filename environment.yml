@@ -1,0 +1,14 @@
+name: edolab-dev
+
+channels:
+  - default
+  - conda-forge
+
+dependencies:
+  - black
+  - python>=3.6
+  - pip
+  - pytest
+  - pip:
+    - -r requirements.txt
+    - pytest-cov
