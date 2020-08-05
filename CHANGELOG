@@ -1,3 +1,9 @@
+v0.0.4 (2020-08-05)
+-------------------
+
+- Add version flag
+- Minor bug fixes in `summarise` command.
+
 v0.0.3 (2020-08-05)
 -------------------
 
