@@ -4,7 +4,8 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3972301.svg)](https://doi.org/10.5281/zenodo.3972301)
 
-A command line tool for running experiments with `edo`.
+A command line tool for running experiments with
+[`edo`](https://github.com/daffidwilde/edo).
 
 
 ## Installation
@@ -24,7 +25,7 @@ send the generated data. An valid script must contain:
 - a function `fitness` that takes an `edo.Individual` instance to be used as the
   fitness function
 - variable assignments for (at least) the essential arguments in
-  `edo.DataOptimiser` except for families
+  `edo.DataOptimiser` except for `families`
 - definitions of any custom distribution classes to be used
 - a list `distributions` that will be used to create the families
 
@@ -72,7 +73,13 @@ And to summarise the data (for easy transfer):
 $ edolab summarise /path/to/experiment/script.py out
 ```
 
-For further details, use the `--help` flag on `run` and `summarise` commands.
+It is highly recommended that you use a virtual environment when using `edo` in
+or outside of this command line tool as `edo` uses `pickle` to store various
+objects created in a run that may not be retrievable with a different version of
+Python.
+
+For further details on the commands, use the `--help` flag on the `run` and
+`summarise` commands.
 
 
 ## Contributing

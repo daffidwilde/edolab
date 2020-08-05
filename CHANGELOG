@@ -1,3 +1,9 @@
+v0.0.3 (2020-08-05)
+-------------------
+
+- Fix bug in `--cores` flag of `run` command.
+- Minor documentation improvements.
+
 v0.0.2 (2020-08-04)
 -------------------
 
