@@ -25,7 +25,9 @@ def main():
 
 @main.command()
 @click.argument("experiment", type=click.Path(exists=True))
-@click.option("--cores", default=None, help="The number of cores to use.")
+@click.option(
+    "--cores", default=None, type=int, help="The number of cores to use."
+)
 @click.option("--seeds", default=1, help="The number of trials to run.")
 @click.option("--root", default=".", help="The directory to write out to.")
 def run(experiment, cores, seeds, root):
