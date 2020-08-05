@@ -31,7 +31,8 @@ def test_run_writes_to_file(tmpdir):
 
     runner = CliRunner()
     result = runner.invoke(
-        main, ["run", f"--root={tmpdir}", f"{here / 'experiment.py'}"]
+        main,
+        ["run", f"--root={tmpdir}", "--cores=4", f"{here / 'experiment.py'}"],
     )
     assert result.exit_code == 0
 
