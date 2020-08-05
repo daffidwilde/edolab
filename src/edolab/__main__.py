@@ -16,11 +16,18 @@ from .summarise import (
     get_trial_summary,
     write_representatives,
 )
+from .version import __version__
 
 
-@click.group()
-def main():
+@click.group(invoke_without_command=True)
+@click.option(
+    "--version", is_flag=True, default=False, help="The current version."
+)
+def main(version):
     """ Run and summarise experiments with `edo`. """
+
+    if version:
+        click.echo(__version__)
 
 
 @main.command()
@@ -80,14 +87,14 @@ def summarise(tarball, experiment, root, quantiles):
     summary_path = out / "summary"
     summary_path.mkdir(exist_ok=True)
 
-    click.echo(f"Summarising data at {experiment}")
+    click.echo(f"Summarising data at {out}")
 
     distributions = get_distributions(experiment)
-    trials = (
+    trials = [
         path
         for path in data.iterdir()
         if path.is_dir() and path.stem != "subtypes"
-    )
+    ]
     summaries = []
     for trial in tqdm.tqdm(trials):
         summaries.append(get_trial_summary(trial, distributions))
