@@ -9,6 +9,7 @@ import pytest
 from click.testing import CliRunner
 
 from edolab.__main__ import main
+from edolab.version import __version__
 
 here = pathlib.Path(f"{__file__}").parent
 
@@ -24,6 +25,15 @@ def test_main_gives_help_info():
         assert result.output == str(main())
         assert isinstance(e, SystemExit)
         assert e.value == 0
+
+
+def test_main_gives_version():
+    """ Test that the main function gives the current version when asked. """
+
+    runner = CliRunner()
+    result = runner.invoke(main, ["--version"])
+    assert result.exit_code == 0
+    assert result.output == __version__ + "\n"
 
 
 def test_run_writes_to_file(tmpdir):
