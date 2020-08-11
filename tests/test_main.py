@@ -101,9 +101,7 @@ def test_summarise_writes_to_file(tmpdir):
     os.system(f"cp {here / 'experiment.py'} {there}")
 
     runner = CliRunner()
-    result = runner.invoke(
-        main, ["summarise", f"{there / 'experiment.py'}"]
-    )
+    result = runner.invoke(main, ["summarise", f"{there / 'experiment.py'}"])
     assert result.exit_code == 0
 
     out = there / "experiment"
@@ -130,9 +128,7 @@ def test_summarise_makes_summary_as_expected(tmpdir):
     os.system(f"cp {here / 'experiment.py'} {there}")
 
     runner = CliRunner()
-    _ = runner.invoke(
-        main, ["summarise", f"{there / 'experiment.py'}"]
-    )
+    _ = runner.invoke(main, ["summarise", f"{there / 'experiment.py'}"])
 
     summary = pd.read_csv(there / "experiment" / "summary" / "main.csv")
     expected = pd.read_csv(here / "experiment" / "summary" / "main.csv")
