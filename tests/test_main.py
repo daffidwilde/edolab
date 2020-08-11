@@ -63,6 +63,20 @@ def test_run_writes_to_file(tmpdir):
     }
 
 
+def test_run_runs_without_issue_in_parallel(tmpdir):
+    """ We know that EDO runs fine in parallel so just check the CLI runs with
+    multiple cores. """
+
+    there = pathlib.Path(tmpdir)
+    os.system(f"cp {here / 'experiment.py'} {there}")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        main, ["run", "--cores=4", f"{there / 'experiment.py'}"],
+    )
+    assert result.exit_code == 0
+
+
 def test_run_makes_fitnesses_as_expected(tmpdir):
     """ Test that the fitness output is as expected. """
 
