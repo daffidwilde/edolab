@@ -5,7 +5,6 @@ import pathlib
 import tarfile
 
 import click
-import edo
 import pandas as pd
 import tqdm
 
@@ -52,8 +51,21 @@ def run(experiment, cores, seeds, root):
 
     for seed in tqdm.tqdm(range(seeds)):
         params = get_experiment_parameters(experiment)
-        opt = edo.DataOptimiser(**params)
-        _ = opt.run(root=out / str(seed), processes=cores, random_state=seed)
+
+        optimiser = params.pop("optimiser")
+        fitness_kwargs = params.pop("fitness_kwargs")
+        stop_kwargs = params.pop("stop_kwargs")
+        dwindle_kwargs = params.pop("dwindle_kwargs")
+
+        opt = optimiser(**params)
+        _ = opt.run(
+            root=out / str(seed),
+            processes=cores,
+            random_state=seed,
+            fitness_kwargs=fitness_kwargs,
+            stop_kwargs=stop_kwargs,
+            dwindle_kwargs=dwindle_kwargs,
+        )
 
     click.echo("Experiment complete")
 
