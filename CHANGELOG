@@ -1,7 +1,14 @@
+v0.0.5 (2020-08-11)
+-------------------
+
+- Add full configuration to experiment script parsing.
+- Allow for parallelised trials via the `--cores` option.
+- Move `root` within the experiment script for `run` and `summarise`.
+
 v0.0.4 (2020-08-05)
 -------------------
 
-- Add version flag
+- Add version flag.
 - Minor bug fixes in `summarise` command.
 
 v0.0.3 (2020-08-05)
