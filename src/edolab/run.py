@@ -3,6 +3,7 @@
 import importlib
 import inspect
 
+import dask
 import edo
 
 
@@ -16,6 +17,8 @@ def get_default_optimiser_arguments():
         if v.default is not inspect.Parameter.empty
     }
 
+    defaults["root"] = None
+    defaults["processes"] = None
     defaults["fitness_kwargs"] = None
     defaults["stop_kwargs"] = None
     defaults["dwindle_kwargs"] = None
@@ -47,3 +50,27 @@ def get_experiment_parameters(experiment):
     params.update(module_params)
 
     return params
+
+
+@dask.delayed
+def run_single_trial(experiment, root, seed):
+    """ Lazily run a single trial of an experiment. """
+
+    params = get_experiment_parameters(experiment)
+
+    _ = params.pop("root")
+    optimiser = params.pop("optimiser")
+    processes = params.pop("processes")
+    fitness_kwargs = params.pop("fitness_kwargs")
+    stop_kwargs = params.pop("stop_kwargs")
+    dwindle_kwargs = params.pop("dwindle_kwargs")
+
+    opt = optimiser(**params)
+    _ = opt.run(
+        root=root / str(seed),
+        processes=processes,
+        random_state=seed,
+        fitness_kwargs=fitness_kwargs,
+        stop_kwargs=stop_kwargs,
+        dwindle_kwargs=dwindle_kwargs,
+    )

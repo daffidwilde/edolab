@@ -5,10 +5,12 @@ import pathlib
 import tarfile
 
 import click
+import dask
 import pandas as pd
 import tqdm
+from dask.diagnostics import ProgressBar
 
-from .run import get_experiment_parameters
+from .run import get_experiment_parameters, run_single_trial
 from .summarise import (
     get_distributions,
     get_representative_idxs,
@@ -35,8 +37,7 @@ def main(version):
     "--cores", default=None, type=int, help="The number of cores to use."
 )
 @click.option("--seeds", default=1, help="The number of trials to run.")
-@click.option("--root", default=".", help="The directory to write out to.")
-def run(experiment, cores, seeds, root):
+def run(experiment, cores, seeds):
     """ Run a series of trials using the `experiment` script. """
 
     experiment = pathlib.Path(experiment).resolve()
@@ -44,28 +45,20 @@ def run(experiment, cores, seeds, root):
 
     click.echo(f"Running experiment: {name}")
 
-    out = pathlib.Path(f"{root}/{name}/data").resolve()
-    out.mkdir(exist_ok=True, parents=True)
+    root = get_experiment_parameters(experiment).pop("root")
+    root = experiment.parent if root is None else root
+    root = pathlib.Path(root) / name / "data"
+    root.mkdir(exist_ok=True, parents=True)
 
-    click.echo(f"Writing to: {out}")
+    click.echo(f"Writing to: {root}")
 
-    for seed in tqdm.tqdm(range(seeds)):
-        params = get_experiment_parameters(experiment)
+    tasks = (run_single_trial(experiment, root, seed) for seed in range(seeds))
 
-        optimiser = params.pop("optimiser")
-        fitness_kwargs = params.pop("fitness_kwargs")
-        stop_kwargs = params.pop("stop_kwargs")
-        dwindle_kwargs = params.pop("dwindle_kwargs")
-
-        opt = optimiser(**params)
-        _ = opt.run(
-            root=out / str(seed),
-            processes=cores,
-            random_state=seed,
-            fitness_kwargs=fitness_kwargs,
-            stop_kwargs=stop_kwargs,
-            dwindle_kwargs=dwindle_kwargs,
-        )
+    with ProgressBar():
+        if cores is None:
+            dask.compute(*tasks, scheduler="single-threaded")
+        else:
+            dask.compute(*tasks, num_workers=cores, scheduler="processes")
 
     click.echo("Experiment complete")
 
