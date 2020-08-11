@@ -39,11 +39,11 @@ def test_main_gives_version():
 def test_run_writes_to_file(tmpdir):
     """ Test that the `run` command writes something to file. """
 
+    there = pathlib.Path(tmpdir)
+    os.system(f"cp {here / 'experiment.py'} {there}")
+
     runner = CliRunner()
-    result = runner.invoke(
-        main,
-        ["run", f"--root={tmpdir}", "--cores=4", f"{here / 'experiment.py'}"],
-    )
+    result = runner.invoke(main, ["run", f"{there / 'experiment.py'}"],)
     assert result.exit_code == 0
 
     out = pathlib.Path(tmpdir) / "experiment"
@@ -66,13 +66,13 @@ def test_run_writes_to_file(tmpdir):
 def test_run_makes_fitnesses_as_expected(tmpdir):
     """ Test that the fitness output is as expected. """
 
-    out = pathlib.Path(tmpdir)
-    runner = CliRunner()
-    _ = runner.invoke(
-        main, ["run", f"--root={out}", f"{here / 'experiment.py'}"]
-    )
+    there = pathlib.Path(tmpdir)
+    os.system(f"cp {here / 'experiment.py'} {there}")
 
-    fitness = pd.read_csv(out / "experiment" / "data" / "0" / "fitness.csv")
+    runner = CliRunner()
+    _ = runner.invoke(main, ["run", f"{there / 'experiment.py'}"])
+
+    fitness = pd.read_csv(there / "experiment" / "data" / "0" / "fitness.csv")
     expected = pd.read_csv(here / "experiment" / "data" / "0" / "fitness.csv")
 
     assert all(fitness.columns == expected.columns)
