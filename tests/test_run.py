@@ -4,11 +4,13 @@ import inspect
 import pathlib
 
 import edo
+from dask.delayed import Delayed
 from edo.distributions import Uniform
 
 from edolab.run import (
     get_default_optimiser_arguments,
     get_experiment_parameters,
+    run_single_trial,
 )
 
 from .experiment import CustomOptimiser, NegativeUniform, fitness
@@ -27,6 +29,8 @@ def test_get_default_optimiser_parameters():
         "mutation_prob": 0.01,
         "shrinkage": None,
         "maximise": False,
+        "root": None,
+        "processes": None,
         "fitness_kwargs": None,
         "stop_kwargs": None,
         "dwindle_kwargs": None,
@@ -54,6 +58,8 @@ def test_get_experiment_parameters():
         "shrinkage": None,
         "maximise": False,
         "optimiser": CustomOptimiser,
+        "root": None,
+        "processes": None,
         "fitness_kwargs": {"size": 3},
         "stop_kwargs": {"tol": 1e-3},
         "dwindle_kwargs": {"rate": 10},
@@ -92,3 +98,29 @@ def test_get_experiment_parameters():
         else:
             exp = expected[key]
             assert exp == val
+
+
+def test_run_single_trial(tmpdir):
+    """ Test that the single trial runner produces a valid set of results. """
+
+    here = pathlib.Path(f"{__file__}").parent
+    experiment = here / "experiment.py"
+    root = pathlib.Path(tmpdir)
+    out = root / "experiment"
+    data = out / "data"
+    trial = data / "0"
+
+    task = run_single_trial(experiment, data, seed=0)
+    assert isinstance(task, Delayed)
+
+    _ = task.compute()
+    assert [p.name for p in out.iterdir()] == ["data"]
+    assert [p.name for p in data.iterdir()] == ["0"]
+    assert {p.name for p in trial.iterdir()} == {
+        "0",
+        "1",
+        "2",
+        "3",
+        "subtypes",
+        "fitness.csv",
+    }
