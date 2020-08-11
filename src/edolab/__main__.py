@@ -5,7 +5,6 @@ import pathlib
 import tarfile
 
 import click
-import edo
 import pandas as pd
 import tqdm
 
