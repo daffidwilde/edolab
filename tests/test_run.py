@@ -4,14 +4,16 @@ import inspect
 import pathlib
 
 import edo
+from dask.delayed import Delayed
 from edo.distributions import Uniform
 
 from edolab.run import (
     get_default_optimiser_arguments,
     get_experiment_parameters,
+    run_single_trial,
 )
 
-from .experiment import NegativeUniform, fitness
+from .experiment import CustomOptimiser, NegativeUniform, fitness
 
 
 def test_get_default_optimiser_parameters():
@@ -27,6 +29,11 @@ def test_get_default_optimiser_parameters():
         "mutation_prob": 0.01,
         "shrinkage": None,
         "maximise": False,
+        "root": None,
+        "processes": None,
+        "fitness_kwargs": None,
+        "stop_kwargs": None,
+        "dwindle_kwargs": None,
     }
 
     assert defaults == expected
@@ -50,12 +57,32 @@ def test_get_experiment_parameters():
         "mutation_prob": 0.5,
         "shrinkage": None,
         "maximise": False,
+        "optimiser": CustomOptimiser,
+        "root": None,
+        "processes": None,
+        "fitness_kwargs": {"size": 3},
+        "stop_kwargs": {"tol": 1e-3},
+        "dwindle_kwargs": {"rate": 10},
     }
 
     for key, val in params.items():
         if key == "fitness":
             assert val.__doc__ == fitness.__doc__
             assert inspect.signature(val) == inspect.signature(fitness)
+
+        elif key == "optimiser":
+            assert val.__doc__ == CustomOptimiser.__doc__
+            assert inspect.signature(val) == inspect.signature(CustomOptimiser)
+            assert val.run is CustomOptimiser.run
+
+            for method in ("stop", "dwindle"):
+                assert inspect.signature(
+                    vars(val)[method]
+                ) == inspect.signature(vars(CustomOptimiser)[method])
+                assert (
+                    vars(val)[method].__doc__
+                    == vars(CustomOptimiser)[method].__doc__
+                )
 
         elif key == "families":
             families = val
@@ -71,3 +98,29 @@ def test_get_experiment_parameters():
         else:
             exp = expected[key]
             assert exp == val
+
+
+def test_run_single_trial(tmpdir):
+    """ Test that the single trial runner produces a valid set of results. """
+
+    here = pathlib.Path(f"{__file__}").parent
+    experiment = here / "experiment.py"
+    root = pathlib.Path(tmpdir)
+    out = root / "experiment"
+    data = out / "data"
+    trial = data / "0"
+
+    task = run_single_trial(experiment, data, seed=0)
+    assert isinstance(task, Delayed)
+
+    _ = task.compute()
+    assert [p.name for p in out.iterdir()] == ["data"]
+    assert [p.name for p in data.iterdir()] == ["0"]
+    assert {p.name for p in trial.iterdir()} == {
+        "0",
+        "1",
+        "2",
+        "3",
+        "subtypes",
+        "fitness.csv",
+    }
