@@ -20,6 +20,16 @@ from .summarise import (
 from .version import __version__
 
 
+def _get_root_from_experiment(experiment):
+    """ Get the root directory from an experiment. If there isn't one, set the
+    root to be adjacent to the experiment script. """
+
+    root = get_experiment_parameters(experiment).pop("root")
+    root = experiment.parent if root is None else root
+
+    return root
+
+
 @click.group(invoke_without_command=True)
 @click.option(
     "--version", is_flag=True, default=False, help="The current version."
@@ -45,14 +55,13 @@ def run(experiment, cores, seeds):
 
     click.echo(f"Running experiment: {name}")
 
-    root = get_experiment_parameters(experiment).pop("root")
-    root = experiment.parent if root is None else root
-    root = pathlib.Path(root) / name / "data"
-    root.mkdir(exist_ok=True, parents=True)
+    root = _get_root_from_experiment(experiment)
+    out = pathlib.Path(root) / name / "data"
+    out.mkdir(exist_ok=True, parents=True)
 
-    click.echo(f"Writing to: {root}")
+    click.echo(f"Writing to: {out}")
 
-    tasks = (run_single_trial(experiment, root, seed) for seed in range(seeds))
+    tasks = (run_single_trial(experiment, out, seed) for seed in range(seeds))
 
     with ProgressBar():
         if cores is None:
@@ -70,23 +79,21 @@ def run(experiment, cores, seeds):
     help="Tarball the data and delete original, or don't.",
 )
 @click.argument("experiment", type=click.Path(exists=True))
-@click.argument("root", default=".", type=click.Path(exists=True))
 @click.argument("quantiles", nargs=-1, type=float, required=False)
-def summarise(tarball, experiment, root, quantiles):
+def summarise(tarball, experiment, quantiles):
     """ Summarise the EDO data from an experiment.
 
-    Here, `experiment` should be of the form
-    `/path/to/experiment/directory/{name}.py` and the data that will be
-    summarised is located under `root/{name}`.
+    Here, `experiment` should be a path to an experiment script of the form
+    `/path/to/experiment/<experiment-name>.py`.
 
-    To specify quantiles (between 0 and 1), list them at the end. Defaults to
-    the minimum, median and maximum. """
+    To specify quantiles (between 0 and 1), list them at the end separated by
+    spaces. Defaults to the minimum, median and maximum. """
 
     if not quantiles:
         quantiles = (0, 0.5, 1)
 
     experiment = pathlib.Path(experiment)
-
+    root = _get_root_from_experiment(experiment)
     out = pathlib.Path(root) / experiment.stem
     data = out / "data"
     summary_path = out / "summary"

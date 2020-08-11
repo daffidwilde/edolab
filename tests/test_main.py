@@ -96,16 +96,17 @@ def test_run_makes_fitnesses_as_expected(tmpdir):
 def test_summarise_writes_to_file(tmpdir):
     """ Test that the `summarise` command writes something to file. """
 
-    out = pathlib.Path(tmpdir)
-    os.system(f"cp -r {here / 'experiment'} {out}")
+    there = pathlib.Path(tmpdir)
+    os.system(f"cp -r {here / 'experiment'} {there}")
+    os.system(f"cp {here / 'experiment.py'} {there}")
 
     runner = CliRunner()
     result = runner.invoke(
-        main, ["summarise", f"{here / 'experiment.py'}", f"{out}"]
+        main, ["summarise", f"{there / 'experiment.py'}"]
     )
     assert result.exit_code == 0
 
-    out = out / "experiment"
+    out = there / "experiment"
     assert [p.name for p in out.iterdir()] == ["data", "summary"]
 
     summary = out / "summary"
@@ -124,15 +125,16 @@ def test_summarise_writes_to_file(tmpdir):
 def test_summarise_makes_summary_as_expected(tmpdir):
     """ Test that the summary output is as expected. """
 
-    out = pathlib.Path(tmpdir)
-    os.system(f"cp -r {here / 'experiment'} {out}")
+    there = pathlib.Path(tmpdir)
+    os.system(f"cp -r {here / 'experiment'} {there}")
+    os.system(f"cp {here / 'experiment.py'} {there}")
 
     runner = CliRunner()
     _ = runner.invoke(
-        main, ["summarise", f"{here / 'experiment.py'}", f"{out}"]
+        main, ["summarise", f"{there / 'experiment.py'}"]
     )
 
-    summary = pd.read_csv(out / "experiment" / "summary" / "main.csv")
+    summary = pd.read_csv(there / "experiment" / "summary" / "main.csv")
     expected = pd.read_csv(here / "experiment" / "summary" / "main.csv")
 
     assert all(summary.columns == expected.columns)
@@ -142,10 +144,14 @@ def test_summarise_makes_summary_as_expected(tmpdir):
 def test_summarise_can_make_tarball(tmpdir):
     """ Test that the `summarise` command can compress the data when asked. """
 
-    out = pathlib.Path(tmpdir)
-    os.system(f"cp -r {here / 'experiment'} {out}/")
+    there = pathlib.Path(tmpdir)
+    os.system(f"cp -r {here / 'experiment'} {there}")
+    os.system(f"cp {here / 'experiment.py'} {there}")
 
-    os.system(f"edolab summarise --tarball {here / 'experiment.py'} {tmpdir}")
+    runner = CliRunner()
+    _ = runner.invoke(
+        main, ["summarise", "--tarball", f"{there / 'experiment.py'}"]
+    )
 
-    out = out / "experiment"
+    out = there / "experiment"
     assert {p.name for p in out.iterdir()} == {"data.tar.gz", "summary"}
