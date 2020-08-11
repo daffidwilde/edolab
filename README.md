@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/edolab.svg)](https://badge.fury.io/py/edolab)
 ![CI](https://github.com/daffidwilde/edolab/workflows/CI/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3972301.svg)](https://doi.org/10.5281/zenodo.3972301)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3979467.svg)](https://doi.org/10.5281/zenodo.3979467)
 
 A command line tool for running experiments with
 [`edo`](https://github.com/daffidwilde/edo).
