@@ -1,3 +1,10 @@
+v0.0.6 (2021-01-03)
+-------------------
+
+- Fix occasional typo in main summarise tests
+- Add local install to dev environment file
+- Run new versions of linters
+
 v0.0.5 (2020-08-11)
 -------------------
 
