@@ -13,4 +13,5 @@ dependencies:
   - pytest
   - pip:
     - -r requirements.txt
+    - -e .
     - pytest-cov
