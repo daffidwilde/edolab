@@ -21,8 +21,8 @@ class CustomOptimiser(edo.DataOptimiser):
 
 
 def fitness(individual, size, seed=0):
-    """ Randomly sample `size` values from an individual and return the
-    minimum. """
+    """Randomly sample `size` values from an individual and return the
+    minimum."""
 
     np.random.seed(seed)
     values = individual.dataframe.values.flat
