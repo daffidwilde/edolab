@@ -43,7 +43,10 @@ def test_run_writes_to_file(tmpdir):
     os.system(f"cp {here / 'experiment.py'} {there}")
 
     runner = CliRunner()
-    result = runner.invoke(main, ["run", f"{there / 'experiment.py'}"],)
+    result = runner.invoke(
+        main,
+        ["run", f"{there / 'experiment.py'}"],
+    )
     assert result.exit_code == 0
 
     out = pathlib.Path(tmpdir) / "experiment"
@@ -64,15 +67,16 @@ def test_run_writes_to_file(tmpdir):
 
 
 def test_run_runs_without_issue_in_parallel(tmpdir):
-    """ We know that EDO runs fine in parallel so just check the CLI runs with
-    multiple cores. """
+    """We know that EDO runs fine in parallel so just check the CLI runs with
+    multiple cores."""
 
     there = pathlib.Path(tmpdir)
     os.system(f"cp {here / 'experiment.py'} {there}")
 
     runner = CliRunner()
     result = runner.invoke(
-        main, ["run", "--cores=4", f"{there / 'experiment.py'}"],
+        main,
+        ["run", "--cores=4", f"{there / 'experiment.py'}"],
     )
     assert result.exit_code == 0
 
@@ -105,7 +109,7 @@ def test_summarise_writes_to_file(tmpdir):
     assert result.exit_code == 0
 
     out = there / "experiment"
-    assert [p.name for p in out.iterdir()] == ["data", "summary"]
+    assert {p.name for p in out.iterdir()} == {"data", "summary"}
 
     summary = out / "summary"
     assert {p.name for p in summary.iterdir()} == {"0", "0.5", "1", "main.csv"}
