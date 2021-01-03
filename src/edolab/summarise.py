@@ -19,8 +19,8 @@ def get_distributions(experiment):
 
 
 def get_trial_summary(trial, distributions):
-    """ Summarise a trial by recording the origins, shapes, sizes and fitnesses
-    of the individuals created in that trial. """
+    """Summarise a trial by recording the origins, shapes, sizes and fitnesses
+    of the individuals created in that trial."""
 
     fitness = pd.read_csv(trial / "fitness.csv")
     max_generation = fitness["generation"].max()
@@ -56,8 +56,8 @@ def get_trial_summary(trial, distributions):
 
 
 def get_representative_idxs(summary, quantiles):
-    """ Get the indices of those individuals that have the closest fitness to
-    the given quantiles. """
+    """Get the indices of those individuals that have the closest fitness to
+    the given quantiles."""
 
     fitness = summary["fitness"]
     idxs = {}

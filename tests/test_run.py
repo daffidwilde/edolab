@@ -40,8 +40,8 @@ def test_get_default_optimiser_parameters():
 
 
 def test_get_experiment_parameters():
-    """ Test that the correct parameters can be brought over from an experiment
-    script. """
+    """Test that the correct parameters can be brought over from an experiment
+    script."""
 
     here = pathlib.Path(f"{__file__}").parent
     params = get_experiment_parameters(here / "experiment.py")

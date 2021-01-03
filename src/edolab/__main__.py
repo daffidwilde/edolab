@@ -21,8 +21,8 @@ from .version import __version__
 
 
 def _get_root_from_experiment(experiment):
-    """ Get the root directory from an experiment. If there isn't one, set the
-    root to be adjacent to the experiment script. """
+    """Get the root directory from an experiment. If there isn't one, set the
+    root to be adjacent to the experiment script."""
 
     root = get_experiment_parameters(experiment).pop("root")
     root = experiment.parent if root is None else root
@@ -81,13 +81,13 @@ def run(experiment, cores, seeds):
 @click.argument("experiment", type=click.Path(exists=True))
 @click.argument("quantiles", nargs=-1, type=float, required=False)
 def summarise(tarball, experiment, quantiles):
-    """ Summarise the EDO data from an experiment.
+    """Summarise the EDO data from an experiment.
 
     Here, `experiment` should be a path to an experiment script of the form
     `/path/to/experiment/<experiment-name>.py`.
 
     To specify quantiles (between 0 and 1), list them at the end separated by
-    spaces. Defaults to the minimum, median and maximum. """
+    spaces. Defaults to the minimum, median and maximum."""
 
     if not quantiles:
         quantiles = (0, 0.5, 1)

@@ -19,8 +19,8 @@ here = pathlib.Path(f"{__file__}").parent
 
 
 def test_get_distributions():
-    """ Test that the distributions are collected from an experiment script
-    correctly. """
+    """Test that the distributions are collected from an experiment script
+    correctly."""
 
     distributions = get_distributions(here / "experiment.py")
 
