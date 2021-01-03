@@ -1,6 +1,6 @@
 # edolab
 
-[![PyPI version](https://badge.fury.io/py/edolab.svg)](https://badge.fury.io/py/edolab)
+[![PyPI version](https://img.shields.io/pypi/v/edo.svg)](https://pypi.org/project/edo/)
 ![CI](https://github.com/daffidwilde/edolab/workflows/CI/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3979467.svg)](https://doi.org/10.5281/zenodo.3979467)
